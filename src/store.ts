@@ -1,8 +1,9 @@
 import { AnyAction, combineReducers, createStore as reduxCreateStore, Store } from "redux";
-import { selectionsReducer, textReducer } from "./reducers";
+import { cursorReducer, selectionsReducer, textReducer } from "./reducers";
 
 export const rootReducer = combineReducers({
   selections: selectionsReducer,
+  cursor: cursorReducer,
   text: textReducer
 });
 

@@ -39,7 +39,12 @@ export interface SetSelectionsAction {
   selections: Selection[];
 }
 
-export type ActionTypes = SetTextAction | SetSelectionsAction;
+export interface SetCursorAction {
+  type: typeof names.SET_CURSOR;
+  position: Position;
+}
+
+export type ActionTypes = SetTextAction | SetSelectionsAction | SetCursorAction;
 
 export function isActionOfInterest(action: AnyAction): action is ActionTypes {
   return (action as ActionTypes).type !== undefined;

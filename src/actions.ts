@@ -1,5 +1,5 @@
 import * as names from "./action-names";
-import { Selection } from "./types";
+import { Position, Selection } from "./types";
 
 export function setText(newText: string) {
   return {
@@ -12,5 +12,12 @@ export function setSelections(...selections: Selection[]) {
   return {
     selections,
     type: names.SET_SELECTIONS
+  };
+}
+
+export function setCursor(position: Position) {
+  return {
+    position,
+    type: names.SET_CURSOR
   };
 }
