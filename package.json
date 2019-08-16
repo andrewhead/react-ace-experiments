@@ -1,14 +1,19 @@
 {
-  "name": "app-dir",
+  "name": "ace-test-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/lodash": "^4.14.136",
+    "lodash": "^4.17.15",
     "react": "^16.9.0",
+    "react-ace": "^7.0.2",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.1"
+    "react-redux": "^7.1.0",
+    "react-scripts": "3.1.1",
+    "redux": "^4.0.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --inspect start --no-cache --runInBand",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -27,5 +32,12 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "@types/react": "^16.9.1",
+    "@types/react-dom": "^16.8.5",
+    "@types/react-redux": "^7.1.1",
+    "typescript": "^3.5.3"
   }
 }
