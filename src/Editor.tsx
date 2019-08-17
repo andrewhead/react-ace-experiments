@@ -4,78 +4,7 @@ import MonacoEditor from "react-monaco-editor";
 import { connect } from "react-redux";
 import { setSelections, setText } from "./actions";
 import { State, store } from "./store";
-import { Position, Selection } from "./types";
-
-interface SelectionData {
-  ranges: Range[];
-  origin: string;
-  update: (ranges: any[]) => void;
-}
-
-// export class Editor extends React.Component<EditorProps> {
-//   render() {
-//     return (
-//       /**
-//        * TODO(andrewhead): multi-select on option, not command.
-//        */
-//       <CodeMirror
-//         // value={this.props.text}
-//         value={this.props.text}
-//         options={{
-//           theme: "idea"
-//         }}
-//         onBeforeChange={(_, __, value) => {
-//           store.dispatch(setText(value));
-//         }}
-//         /*
-//         cursor={{
-//           line: this.props.cursor !== null ? this.props.cursor.line : 0,
-//           ch: this.props.cursor !== null ? this.props.cursor.character : 0
-//         }}
-//         onCursor={(_, pos: any) => {
-//           console.log("cursor moved");
-//           store.dispatch(setCursor({ line: pos.line, character: pos.ch }));
-//         }}
-//         */
-//         selection={{
-//           ranges: this.props.selections.map(selection => {
-//             return {
-//               anchor: { line: selection.anchor.line, ch: selection.anchor.character },
-//               head: { line: selection.active.line, ch: selection.active.character }
-//             };
-//           }),
-//           focus: true
-//         }}
-//         /*
-//         selection={{
-//           ranges: [
-//             {
-//               anchor: { ch: 5, line: 0 },
-//               head: { ch: 20, line: 0 }
-//             }
-//           ]
-//         }}
-//         */
-//         onSelection={(editor: CodeMirror.Editor, selections: SelectionData) => {
-//           console.log("selection changed", selections);
-//           store.dispatch(
-//             setSelections(
-//               ...selections.ranges.map(range => {
-//                 return {
-//                   anchor: { line: range.anchor.line, character: range.anchor.ch },
-//                   active: { line: range.head.line, character: range.head.ch }
-//                 };
-//               })
-//             )
-//           );
-//           if (selections.origin === undefined) {
-//             selections.update(editor.getDoc().listSelections());
-//           }
-//         }}
-//       />
-//     );
-//   }
-// }
+import { Selection } from "./types";
 
 function getSelectionFromMonacoSelection(monacoSelection: monacoEditor.Selection): Selection {
   const start = { line: monacoSelection.startLineNumber, character: monacoSelection.startColumn };
@@ -130,10 +59,6 @@ export class Editor extends React.Component<EditorProps> {
           ...[e.selection, ...e.secondarySelections].map(getSelectionFromMonacoSelection)
         )
       );
-      // if (this.props.onSelectionsChange) {
-      //   this.props.onSelectionsChange([e.selection, ...e.secondarySelections]);
-      // }
-      // this.updateEditor();
     });
   }
 
@@ -147,14 +72,15 @@ export class Editor extends React.Component<EditorProps> {
     }
     if (this.props.text !== this.editor.getValue()) {
       this.editor.setValue(this.props.text);
-      // this.editor.getLayoutInfo().contentHeight = this.props.text.split("\n").length * 19;
-      // const contentHeight = this.editor.getModel()?.getLineCount() * 19 ; // 19 is the line height of default theme
     }
 
     const monacoSelections = this.props.selections.map(getMonacoSelectionFromSelection);
     const editorSelections = this.editor.getSelections();
     if (this.monaco !== null) {
-      // TODO(andrewhead): Clear selections when set to 0.
+      /*
+       * TODO(andrewhead): Clear selections when set to 0 (only seems to be the case when
+       * the editors are initialized).
+       */
       if (Array.isArray(this.props.selections) && this.props.selections.length > 0) {
         if (
           editorSelections === null ||
@@ -164,18 +90,30 @@ export class Editor extends React.Component<EditorProps> {
         }
       }
     }
+
+    const lineHeight = this.editor.getConfiguration().lineHeight;
+    const editorDomNode = this.editor.getDomNode();
+    if (editorDomNode !== null) {
+      editorDomNode.style.height = `${lineHeight * this.props.text.split("\n").length +
+        this.editor.getConfiguration().layoutInfo.horizontalScrollbarHeight}px`;
+      this.editor.layout();
+    }
   }
 
   render() {
     return (
       <div className="WebpageEditor">
         <MonacoEditor
-          height="600px"
           theme="vs"
           editorDidMount={this.editorDidMount}
           onChange={value => {
             store.dispatch(setText(value));
-            // this.updateEditor();
+          }}
+          options={{
+            scrollBeyondLastLine: false,
+            minimap: { enabled: false },
+            overviewRulerLanes: 0
+            // readOnly: true
           }}
         />
       </div>
@@ -186,9 +124,8 @@ export class Editor extends React.Component<EditorProps> {
 interface EditorProps {
   text: string;
   selections: Selection[];
-  cursor: Position | null;
 }
 
 export default connect((state: State) => {
-  return { text: state.text, selections: state.selections, cursor: state.cursor };
+  return { text: state.text, selections: state.selections };
 })(Editor);
