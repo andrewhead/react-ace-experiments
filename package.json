@@ -3,13 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/codemirror": "0.0.76",
     "@types/lodash": "^4.14.136",
-    "codemirror": "^5.48.2",
     "lodash": "^4.17.15",
     "react": "^16.9.0",
-    "react-codemirror2": "^6.0.0",
     "react-dom": "^16.9.0",
+    "react-monaco-editor": "^0.30.0",
     "react-redux": "^7.1.0",
     "react-scripts": "3.1.1",
     "redux": "^4.0.4"
@@ -40,6 +38,8 @@
     "@types/react": "^16.9.1",
     "@types/react-dom": "^16.8.5",
     "@types/react-redux": "^7.1.1",
+    "//": "monaco-editor only included for types information. Do not use directoy, instead use react-monaco-editor",
+    "monaco-editor": "^0.17.1",
     "typescript": "^3.5.3"
   }
 }
