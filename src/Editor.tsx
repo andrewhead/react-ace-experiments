@@ -80,9 +80,19 @@ interface SelectionData {
 function getSelectionFromMonacoSelection(monacoSelection: monacoEditor.Selection): Selection {
   const start = { line: monacoSelection.startLineNumber, character: monacoSelection.startColumn };
   const end = { line: monacoSelection.endLineNumber, character: monacoSelection.endColumn };
-  return monacoSelection.getDirection() === monacoEditor.SelectionDirection.LTR
-    ? { anchor: start, active: end }
-    : { anchor: end, active: start };
+  const selection =
+    monacoSelection.getDirection() === monacoEditor.SelectionDirection.LTR
+      ? { anchor: start, active: end }
+      : { anchor: end, active: start };
+  // Prototoype: constrain selections to single lines.
+  if (selection.active.line > selection.anchor.line) {
+    selection.active.line = selection.anchor.line;
+    selection.active.character = Number.POSITIVE_INFINITY;
+  } else if (selection.active.line < selection.anchor.line) {
+    selection.active.line = selection.anchor.line;
+    selection.active.character = 0;
+  }
+  return selection;
 }
 
 function getMonacoSelectionFromSelection(selection: Selection): monacoEditor.Selection {
